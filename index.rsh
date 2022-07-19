@@ -12,12 +12,12 @@ export const main = Reach.App(() => {
 			name : Bytes(32),
 			symbol : Bytes(8),
 		})),
-		saleReady : Fun([], Null),
+		saleReady : Fun([Token, UInt], Null),
 		showOwners : Fun([], Null),
 	});
 
 	const Investor = API("Investor", {
-		buy : Fun([UInt], Null)
+		buy : Fun([UInt], UInt)
 	});
 
 	init();
@@ -35,19 +35,19 @@ export const main = Reach.App(() => {
 	commit();
 
 	RealEstateCo.publish();
-	RealEstateCo.interact.saleReady();
+	RealEstateCo.interact.saleReady(token, initialTokenCost);
 
 	const [
 	] = parallelReduce([])
 		.invariant(token.destroyed() == false )
 		.while(true)
 		.api_(Investor.buy, (amt) => {
-			/*const tokensPurchased = propertyValue / amt;*/
-			/*check((tokensPurchased <= balance(token)), "all tokens have been purchased");*/
-			check((amt <= balance(token)), "all tokens have been purchased");
+			const tokensPurchased = propertyValue / amt;
+			check((tokensPurchased <= balance(token)), "all tokens have been purchased");
 			return [amt, (notify) => {
-				notify(null);
-				transfer(amt, token).to(this);
+				transfer(tokensPurchased, token).to(this);
+				notify(balance(token))
+				transfer(amt).to(RealEstateCo);
 				return []
 			}]
 		})
