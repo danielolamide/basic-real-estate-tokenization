@@ -44,8 +44,6 @@ await ctcRealEstateCo.participants.RealEstateCo({
 	showOwners: () => {
 		console.log("Owners");
 	},
-	//showMoneyMade: async () => {
-		//console.log(`Real Estate Company has wallet balance of ${stdlib.formatCurrency(await accRealEstateCo.balanceOf())}${stdlib.standardUnit}`);
 	//}
 });
 

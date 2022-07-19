@@ -16,6 +16,10 @@ export const main = Reach.App(() => {
 		showOwners : Fun([], Null),
 	});
 
+	/*const Info = View("Info", {*/
+		/*tokenOwners : */
+	/*});*/
+
 	const Investor = API("Investor", {
 		buy : Fun([UInt], UInt)
 	});
@@ -36,6 +40,7 @@ export const main = Reach.App(() => {
 
 	RealEstateCo.publish();
 	RealEstateCo.interact.saleReady(token, initialTokenCost);
+	const owners = new Set();
 
 	const [
 	] = parallelReduce([])
@@ -46,6 +51,7 @@ export const main = Reach.App(() => {
 			check((tokensPurchased <= balance(token)), "all tokens have been purchased");
 			return [amt, (notify) => {
 				transfer(tokensPurchased, token).to(this);
+				owners.insert(this);
 				notify(balance(token))
 				transfer(amt).to(RealEstateCo);
 				return []
